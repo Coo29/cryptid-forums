@@ -8,10 +8,11 @@ venv/
 # secrets and local database
 .env
 instance/site.db
+!instance/.gitkeep
 
 # ignore user generated files
 static/uploads/*
-!static/uploads.gitkeep
+!static/uploads/.gitkeep
 
 #other files
 .DS_Store
