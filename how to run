@@ -1,9 +1,8 @@
-HOW TO RUN:
+HOW TO RUN
 
 PREREQUISITES:
 
 - you need to have Python3 installed. If you are on debian you also need python3-venv.
-
 
 SETTING UP THE VIRTUAL ENVIRONMENT:
 
@@ -25,11 +24,11 @@ SETTING UP THE VIRTUAL ENVIRONMENT:
 
 SETTING UP THE .ENV FILE
 
-- first you will need to set up a discord bot, you can do this from the discord developer portal (https://discord.com/developers/applications/)
+- first you will need to set up a discord bot, you can do this from the discord developer portal (<https://discord.com/developers/applications/>)
 
 - in the oauth2 tab once the bot is created, you will need to add the following url to redirects:
 
-    - http://localhost:5001/login/discord/authorized
+  - <http://localhost:5001/login/discord/authorized>
 
 you will then need to fill in the .env file parameters with the following information:
 
@@ -56,7 +55,7 @@ RUNNING THE SITE
 
 - once it's all initialized, go to the following page to test the site:
 
-    http://localhost:5001/
+    <http://localhost:5001/>
 
 OTHER NOTES
 
