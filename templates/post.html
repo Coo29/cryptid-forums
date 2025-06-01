@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        {{ post.user.username }}'s Post (Placeholder)
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<!-- body start -->
+
+<body>
+
+    <!-- back button start -->
+
+        <a href="{{ url_for('index') }}">
+            <button>
+                Back to main page
+            </button>
+        </a>
+
+    <!-- back button end -->
+
+        <br>
+        <br>
+
+    <!-- post start -->
+
+    <div class="post">
+
+        <!-- post header start -->
+
+            <div class="post-header">
+                <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
+                <strong>
+                    {{ post.user.username }}
+                </strong>
+            </div>
+
+            <small>
+                {{ post.timestamp.strftime('%y-%m-%d %H:%M:%S') }}
+            </small>
+
+        <!-- post header end -->
+
+
+        <!-- post content start -->
+            <div class="full_post_content">
+                {{ post.content| safe | format_post_content }}
+            </div>
+            
+            {% for image in post.images %}
+                <img src="{{ url_for('static', filename='uploads/' ~ image.filename) }}" style="max-width: 200px;">
+            {% endfor %}
+            
+            <p>
+                <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">
+                        {{ post.likes.count() }} ✓
+                    </button>
+                </form>
+            </p>
+
+            {% if post.attachment %}
+                <p>
+                    Attached file(s): <a href="{{ url_for('uploaded_file', filename=post.attachment) }}" download>
+                        {{ post.attachment }}
+                    </a>
+                </p>
+            {% endif %}
+        <!-- post content end -->
+        
+    </div>
+
+    <!-- post content end -->
+
+    <!-- moderation start -->
+
+        {% if user.is_authenticated and user.discord_id in config['MODERATOR_IDS'] %}
+            <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+                <button type="submit">
+                    Remove Post
+                </button>
+            </form>
+        {% endif %}
+
+    <!-- moderation end -->
+
+    <!-- comments start -->
+
+        <h3>Comments</h3>
+
+        {% if user.is_authenticated %}
+            <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
+                <textarea name="comment" required placeholder="Write a comment..." rows="3" style="width:100%;"></textarea>
+                
+                <button type="submit">
+                    Post Comment
+                </button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('login') }}">
+                <button>
+                    Log in to comment.
+                </button>
+            </a>
+        {% endif %}
+
+        {% for comment in post.comments %}
+            <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
+                <strong>
+                    {{ comment.user.username }}
+                </strong>
+                -
+                <small>
+                    {{ comment.timestamp.strftime('%y-%m-%d %H:%M') }}
+                </small>
+                <p>
+                    {{ comment.content }}
+                </p>
+            </div>
+        {% endfor %}
+</body>
+
+<!-- body end -->
+
+<!-- script loading start -->
+    <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+<!-- script loading end -->
+
+</html>

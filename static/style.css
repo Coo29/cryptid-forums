@@ -1,0 +1,152 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    background-color: #12263d;
+    color: #dee0ce;
+}
+
+button {
+    color: #dee0ce;
+    padding: 2%;
+    border: 2px solid #2a2735;
+    border-radius: 15px;
+    box-shadow: 4px 4px 0 0 rgba(0,0,0,0.7);
+    background-color:#071322;
+    cursor: pointer;
+}
+
+textarea {
+    color: #dee0ce;
+    min-width: 10vw;
+    max-width: 70vw;
+    padding: 2%;
+    margin-bottom: 20px;
+    border: 2px solid #2a2735;
+    border-radius: 15px;
+    box-shadow: 4px 4px 0 0 rgba(0,0,0,0.7);
+    background-color:#071322;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+}
+
+.post {
+    min-width: 10vw;
+    max-width: 70vw;
+    padding: 2%;
+    margin-bottom: 20px;
+    border: 2px solid #2a2735;
+    border-radius: 15px;
+    box-shadow: 4px 4px 0 0 rgba(0,0,0,0.7);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color:#071322;
+}
+
+img {
+    border-radius: 8px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    color: #dee0ce;
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    height: 80%;
+    border-radius: 10px;
+    overflow-y: auto;
+    position: relative;
+    transition: opacity 0.2s ease-in-out;
+    border: 2px solid #2a2735;
+    border-radius: 15px;
+    background-color:#163f70;
+}
+
+.tag {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.tag:hover {
+  text-decoration: underline;
+}
+
+.close-button {
+    display: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.highlighted-word {
+  color: #64a142;
+  font-weight: bold;
+}
+
+.ql-toolbar .ql-picker,
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-options,
+.ql-toolbar button {
+  color: #ffffff !important;
+}
+
+.ql-toolbar .ql-fill {
+  fill: #ffffff !important;
+}
+
+.ql-toolbar .ql-stroke {
+  stroke: #ffffff !important;
+}
+
+.ql-toolbar .ql-even {
+  fill: #ffffff !important;
+}
+
+.ql-toolbar .ql-picker {
+  color: #ffffff !important;
+}
+
+.ql-toolbar .ql-active .ql-fill {
+  fill: #00bfff !important;
+}
+
+.ql-toolbar .ql-active .ql-stroke {
+  stroke: #00bfff !important;
+}
+
+.ql-toolbar .ql-active .ql-even {
+  fill: #00bfff !important;
+}
+
+.ql-snow .ql-picker-options {
+  background-color: #2b2b2b;
+  color: #ffffff;
+  border: 1px solid #444;
+}
+
+.ql-toolbar button:hover .ql-fill,
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button:hover .ql-even {
+  fill: #cccccc !important;
+  stroke: #cccccc !important;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<!-- header start -->
+<head>
+    <title>Cryptid Forum</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<!-- header end -->
+
+<!-- body start -->
+<body>
+
+{% block content %}
+    <h2>Posts tagged with <span class="tag">#{{ tag }}</span></h2>
+
+    {% if posts %}
+        {% for post in posts %}
+            <a href="{{ url_for('view_post', post_id=post.id) }}" style="text-decoration: none; color: inherit;">
+                <div class="post">
+                    <div class="post-header">
+                        <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; margin-right: 10px;">
+                        <strong>{{ post.user.username }}</strong>
+                        <small>
+                             | 
+                            {{ post.timestamp.strftime('%y-%m-%d %H:%M') }}
+                             | 
+                            {{ post.likes.count() }}
+                            ✓
+                        </small>
+                    </div>
+
+                    <br>
+
+                    <p class="full_post_content">
+                        {{ post.content[:140]|safe|format_post_content }}
+                        {% if post.content|length > 140 %}...{% endif %}
+                    </p>
+
+                    {% if post.images %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ post.images[0].filename) }}" class="thumbnail" style="max-width: 200px;">
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <p>No posts found with this tag.</p>
+    {% endif %}
+        
+{% endblock %}
+</body>

@@ -1,0 +1,18 @@
+# python cache
+__pycache__/
+
+# virtual environments
+venv/
+.venv/
+
+# secrets and local database
+.env
+instance/site.db
+
+# ignore user generated files
+static/uploads/*
+!static/uploads.gitkeep
+
+#other files
+.DS_Store
+Thumbs.db

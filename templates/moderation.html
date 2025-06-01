@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <h1>Moderation Panel</h1>
+    {% for post in posts %}
+        <div class="post">
+        <div class="post-header">
+            <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
+            <strong>{{ post.user.username }}</strong>
+        </div>
+        <small>{{post.timestamp.strftime('%y-%m-%d %H:%M:%S') }}</small>
+        <div class="full-post-content">{{ post.content|safe }}</div>
+        {% if post.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' ~ post.image_filename) }}" style="max-width: 100%;">
+        {% endif %}
+
+        <p>
+            <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
+                <button type="submit">
+                    {{ post.likes.count() }} ✓
+                </button>
+            </form>
+        </p>
+
+        {% if post.attachment %}
+        <p>
+            Attached file(s): <a href="{{ url_for('uploaded_file', filename=post.attachment) }}" download>{{ post.attachment }}</a>
+        </p>
+        {% endif %}
+    </div>
+        <form action="{{ url_for('restore_post', post_id=post.id) }}" method="post" style="display: inline;">
+            <button type="submit">Restore Post</button>
+        </form>
+        
+        <form action="{{ url_for('permanent_delete_post', post_id=post.id) }}" method="post" style="display: inline;">
+            <button type="submit">Permanently Delete Post</button>
+        </form>
+    {% else %}
+        <p>No deleted posts to moderate.</p>
+    {% endfor %}
+{% endblock %}
