@@ -11,10 +11,12 @@
     <i>[in terminal (linux)]</i>
 ######
         > source venv/bin/activate
+        
 
     <i>[in cmd.exe (windows)]</i>
 ######
         > venv\Scripts\activate.bat
+
 
     <i>[in PowerShell (windows)]</i>
 ######
