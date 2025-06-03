@@ -1,0 +1,14 @@
+    {% for comment in post.comments %}
+        <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
+            <strong>
+                {{ comment.user.username }}
+            </strong>
+                -
+            <small>
+                {{ comment.timestamp.strftime('%y-%m-%d %H:%M') }}
+            </small>
+            <p>
+                {{ comment.content }}
+            </p>
+        </div>
+    {% endfor %}

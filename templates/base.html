@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- header start -->
+    <head>
+        {% block title %} <title>Cryptid Forum</title> {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+<!-- header end -->
+
+<!-- site header start -->
+<body>
+    <header class="site-header">
+        <a href="{{ url_for('index') }}" class="site-logo">
+            <img src="{{ url_for('static', filename='icon.png') }}" alt='Site Icon' class='icon'>
+            <span class="site-title">Cryptid Forums</span>
+        </a>
+
+       <nav class="site-nav">
+            {% if current_user.is_authenticated %}
+                <span id="showPostForm" class="create-post">Create Post</span>
+                    {% if is_moderator() %}
+                        <a href="{{ url_for('moderation_panel') }}">Moderation</a>
+                    {% endif %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login Via Discord</a>
+            {% endif %}
+            </nav>
+        </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+<!-- site header end -->
+
+<!-- post creation modal start -->
+    <div id="postModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <form action="{{ url_for('create_post') }}" method="POST" enctype="multipart/form-data">
+                <!-- toolbar start -->
+                    <div id="toolbar">
+                        <!-- font size start -->
+                            <div class="custom-font-size-dropdown">
+                                <button type="button" class="dropdown-toggle">Normal</button>
+                                <ul class="dropdown-menu">
+                                    <li data-size="small">Small</li>
+                                    <li data-size="normal">Normal</li>
+                                    <li data-size="large">Large</li>
+                                    <li data-size="huge">Huge</li>
+                                </ul>
+                            </div>
+                        <!-- font size end -->
+
+                        <!-- text formatting start -->
+                            <button class="ql-bold"></button>
+                            <button class="ql-italic"></button>
+                            <button class="ql-underline"></button>
+                            <button class="ql-code-block"></button>
+                        <!-- text formatting end -->
+
+                        <!-- links start -->
+                            <button class="ql-link"></button>
+                        <!-- links end -->
+
+                        <!-- lists start -->
+                            <button class="ql-list" value="ordered"></button>
+                            <button class="ql-list" value="bullet"></button>
+                        <!-- lists end -->
+
+                        <!-- clean formatting start -->
+                            <button class="ql-clean"></button>
+                        <!-- clean formatting end -->
+
+                        <!-- spacer start -->
+                        <div class="toolbar-spacer"></div>
+                        <!-- spacer end -->
+                        <!-- post title start -->
+                        <input type="text" id="post-title" name="title" maxlength="140" class="post-title-input" required style="width:40%; margin-bottom:10px;" placeholder="Enter a title...">
+                       <!-- post title end -->
+                    </div>
+                <!-- toolbar end -->
+                 
+                <div id="editor-container" style="height: 35vw;"></div>
+                <input type="hidden" name="content" id="hidden-content">
+                <br>
+                <input type="file" name="attachment" id="attachment-input" multiple style="display:none;">
+                <label for="attachment-input" class="browse-button">Browse</label>
+                <div id="attachment-preview" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px;"></div>
+                <br>
+                <br>
+                <div class="post-button-row">
+                    <button class="browse-button" type="button" id="closePostForm" style="font-size:1.2rem;">Cancel</button>
+                    <button class="browse-button" type="submit" style="font-size:1.2rem;">Post</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+<!-- post creation modal end -->
+
+<!-- footer start -->
+<footer class="site-footer">
+    <span>&copy; 2025 Cryptid Forums.</span>
+    <button id="fontToggleBtn" class="footer-button" type="button">Switch Font</button>
+</footer>
+
+ <!-- script loading start -->
+    <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<!-- script loading end -->
+ </html>

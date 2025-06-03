@@ -1,0 +1,28 @@
+<!-- moderation start -->
+    {% if user.is_authenticated and user.discord_id in config['MODERATOR_IDS'] %}
+        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+            <button type="submit">
+                Remove Post
+            </button>
+        </form>
+       {% endif %}
+<!-- moderation end -->
+
+<!-- comments start -->
+    <h3>Comments</h3>
+    {% if user.is_authenticated %}
+        <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
+            <textarea name="comment" required placeholder="Write a comment..." rows="3" style="width:100%;"></textarea>
+            <br>
+            <button type="submit">
+                Post Comment
+            </button>
+        </form>
+    {% else %}
+        <a href="{{ url_for('login') }}">
+            <button>
+                Log in to comment.
+            </button>
+           </a>
+    {% endif %}
+<!-- comments end -->

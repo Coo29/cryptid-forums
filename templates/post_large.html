@@ -1,0 +1,64 @@
+<!-- post start -->
+    <div class="post">
+        <!-- post header start -->
+            <div class="post-header">
+                <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
+                <strong>
+                    {{ post.user.username }}
+                </strong>
+
+                <small>
+                    {{ post.timestamp.strftime('%y-%m-%d %H:%M:%S') }}
+                </small>
+            </div>
+        <!-- post header end -->
+
+        <!-- post title start -->
+            <h2 class="post-title">{{ post.title }}</h2>
+        <!-- post title end -->
+
+        <!-- post content start -->
+            <!-- post text content start -->
+                <div class="full_post_content">
+                    {{ post.content| safe | format_post_content }}
+                </div>
+            <!-- post text content end -->
+
+            <!-- post image content start -->
+                {% if post.images %}
+                    {% for image in post.images %}
+                        <img src="{{ url_for('static', filename='uploads/images/' ~ image.filename) }}" style="max-width: 200px;">
+                    {% endfor %}
+                {% endif %}
+            <!-- post image content end -->
+
+            <!-- post like button start -->
+                <p>
+                    <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
+                        <button type="submit">
+                            {{ post.likes.count() }} ✓
+                        </button>
+                    </form>
+                </p>
+            <!-- post like button end -->
+
+            <!-- post attachments start -->
+                {% if post.attachments %}
+                    <div class="attachments">
+                        <p><strong>Attached file(s)</strong></p>
+                        <ul>
+                            {% for attachment in post.attachments %}
+                                <li>
+                                    <a class="file" href="{{ url_for('uploaded_file_file', filename=attachment.filename) }}" download>
+                                        {{ attachment.original_filename }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            <!-- post attachments end -->
+
+        <!-- post content end -->
+    </div>
+<!-- post end -->
