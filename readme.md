@@ -1,19 +1,20 @@
-HOW TO RUN
+<h1>HOW TO RUN</h1>
 
-PREREQUISITES:
+<h3>PREREQUISITES:</h3>
 
 - you need to have Python3 installed. If you are on debian you also need python3-venv.
 
-SETTING UP THE VIRTUAL ENVIRONMENT:
+<h3>SETTING UP THE VIRTUAL ENVIRONMENT:</h3>
 
 - you will also need to recreate the venv folder. you can do this by running (in the project folder):
-    [in terminal (linux)]
+
+    <i>[in terminal (linux)]</i>
     > source venv/bin/activate
 
-    [in cmd.exe (windows)]
+    <i>[in cmd.exe (windows)]</i>
     > venv\Scripts\activate.bat
 
-    [in PowerShell (windows)]
+    <i>[in PowerShell (windows)]</i>
     > venv\Scripts\activate.ps1
 
 - once you are in the virtual environment, you will then need to run the following command:
@@ -47,7 +48,7 @@ you will then need to fill in the .env file parameters with the following inform
     MODERATOR_IDS=
         - the discord ID's for any user you want to have moderator permissions. this allows the specified users to remove, restore, and permanently delete posts.
 
-RUNNING THE SITE
+<h3>RUNNING THE SITE</h3>
 
 - once all of the other steps are complete, run the following command in the project folder (and while still in the virtual environment):
 
@@ -57,6 +58,6 @@ RUNNING THE SITE
 
     <http://localhost:5001/>
 
-OTHER NOTES
+<h3>OTHER NOTES</h3>
 
 that should be it! if you have any issues contact me on discord. my username is coo29.
