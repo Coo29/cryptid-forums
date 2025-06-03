@@ -8,24 +8,27 @@
 
 - you will also need to recreate the venv folder. you can do this by running (in the project folder):
 
-    <i>[in terminal (linux)]</i>
-######
-        > source venv/bin/activate
-        
+<i>[in terminal (linux)]</i>
 
-    <i>[in cmd.exe (windows)]</i>
 ######
-        > venv\Scripts\activate.bat
+        source venv/bin/activate
 
+<i>[in cmd.exe (windows)]</i>
 
-    <i>[in PowerShell (windows)]</i>
 ######
-        > venv\Scripts\activate.ps1
+        venv\Scripts\activate.bat
+
+<i>[in PowerShell (windows)]</i>
+
+######
+        venv\Scripts\activate.ps1
 
 - once you are in the virtual environment, you will then need to run the following command:
 
 ######
-        > pip install flask flask_sqlalchemy flask_login flask_dance python-dotenv
+        pip install flask flask_sqlalchemy flask_login flask_dance
+        
+        python-dotenv
 
 - once all of the prerequisites are installed, you will need to set up the .env file.
 
@@ -61,7 +64,7 @@ you will then need to fill in the .env file parameters with the following inform
 - once all of the other steps are complete, run the following command in the project folder (and while still in the virtual environment):
 
 ######
-        > python app.py
+        python app.py
 
 - once it's all initialized, go to the following page to test the site:
 
