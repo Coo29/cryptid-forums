@@ -42,7 +42,7 @@ you will then need to fill in the .env file parameters with the following inform
         - the client secret for your discord bot.
 
     OAUTHLIB_INSECURE_TRANSPORT=1
-        - leave this at 1 for testing, this allows the discord bot to authorized requests coming from an insecure domain
+        - leave this at 1 for testing, this allows the discord bot to authorize requests coming from an insecure domain
 
     MODERATOR_IDS=
         - the discord ID's for any user you want to have moderator permissions. this allows the specified users to remove, restore, and permanently delete posts.
