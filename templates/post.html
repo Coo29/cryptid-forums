@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html>
+<!-- header start -->
 <head>
     <title>
         {{ post.user.username }}'s Post (Placeholder)
     </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
+<!-- header end -->
+ 
 <!-- body start -->
-
 <body>
 
-    <!-- back button start -->
-
-        <a href="{{ url_for('index') }}">
-            <button>
-                Back to main page
-            </button>
-        </a>
-
-    <!-- back button end -->
+<!-- back button start -->
+    <a href="{{ url_for('index') }}">
+        <button>
+            Back to main page
+        </button>
+    </a>
+<!-- back button end -->
 
         <br>
         <br>
 
-    <!-- post start -->
-
+<!-- post start -->
     <div class="post">
-
         <!-- post header start -->
-
             <div class="post-header">
                 <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
                 <strong>
@@ -40,31 +36,37 @@
             <small>
                 {{ post.timestamp.strftime('%y-%m-%d %H:%M:%S') }}
             </small>
-
         <!-- post header end -->
 
-
         <!-- post content start -->
-            <div class="full_post_content">
-                {{ post.content| safe | format_post_content }}
-            </div>
-            {% if post.images %}
-                {% for image in post.images %}
-                    <img src="{{ url_for('static', filename='uploads/images/' ~ image.filename) }}" style="max-width: 200px;">
-                {% endfor %}
-            {% endif %}
-            
-            <p>
-                <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
-                    <button type="submit">
-                        {{ post.likes.count() }} ✓
-                    </button>
-                </form>
-            </p>
+            <!-- post text content start -->
+                <div class="full_post_content">
+                    {{ post.content| safe | format_post_content }}
+                </div>
+            <!-- post text content end -->
 
-            {% if post.attachments %}
-                <div class="attachments">
-                    <p><strong>Attached file(s)</strong></p>
+            <!-- post image content start -->
+                {% if post.images %}
+                    {% for image in post.images %}
+                        <img src="{{ url_for('static', filename='uploads/images/' ~ image.filename) }}" style="max-width: 200px;">
+                    {% endfor %}
+                {% endif %}
+            <!-- post image content end -->
+
+            <!-- post like button start -->
+                <p>
+                    <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
+                        <button type="submit">
+                            {{ post.likes.count() }} ✓
+                        </button>
+                    </form>
+                </p>
+            <!-- post like button end -->
+
+            <!-- post attachments start -->
+                {% if post.attachments %}
+                    <div class="attachments">
+                        <p><strong>Attached file(s)</strong></p>
                         <ul>
                             {% for attachment in post.attachments %}
                                 <li>
@@ -74,66 +76,61 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                </div>
-            {% endif %}
+                    </div>
+                {% endif %}
+            <!-- post attachments end -->
+
         <!-- post content end -->
-        
     </div>
+<!-- post end -->
 
-    <!-- post content end -->
+<!-- moderation start -->
+    {% if user.is_authenticated and user.discord_id in config['MODERATOR_IDS'] %}
+        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+            <button type="submit">
+                Remove Post
+            </button>
+        </form>
+       {% endif %}
+<!-- moderation end -->
 
-    <!-- moderation start -->
+<!-- comments start -->
+    <h3>Comments</h3>
+    {% if user.is_authenticated %}
+        <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
+            <textarea name="comment" required placeholder="Write a comment..." rows="3" style="width:100%;"></textarea>
+            <button type="submit">
+                Post Comment
+            </button>
+        </form>
+    {% else %}
+        <a href="{{ url_for('login') }}">
+            <button>
+                Log in to comment.
+            </button>
+           </a>
+    {% endif %}
 
-        {% if user.is_authenticated and user.discord_id in config['MODERATOR_IDS'] %}
-            <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
-                <button type="submit">
-                    Remove Post
-                </button>
-            </form>
-        {% endif %}
-
-    <!-- moderation end -->
-
-    <!-- comments start -->
-
-        <h3>Comments</h3>
-
-        {% if user.is_authenticated %}
-            <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
-                <textarea name="comment" required placeholder="Write a comment..." rows="3" style="width:100%;"></textarea>
-                
-                <button type="submit">
-                    Post Comment
-                </button>
-            </form>
-        {% else %}
-            <a href="{{ url_for('login') }}">
-                <button>
-                    Log in to comment.
-                </button>
-            </a>
-        {% endif %}
-
-        {% for comment in post.comments %}
-            <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
-                <strong>
-                    {{ comment.user.username }}
-                </strong>
+    {% for comment in post.comments %}
+        <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
+            <strong>
+                {{ comment.user.username }}
+            </strong>
                 -
-                <small>
-                    {{ comment.timestamp.strftime('%y-%m-%d %H:%M') }}
-                </small>
-                <p>
-                    {{ comment.content }}
-                </p>
-            </div>
-        {% endfor %}
-</body>
+            <small>
+                {{ comment.timestamp.strftime('%y-%m-%d %H:%M') }}
+            </small>
+            <p>
+                {{ comment.content }}
+            </p>
+        </div>
+    {% endfor %}
+<!-- comments end -->
 
+</body>
 <!-- body end -->
 
 <!-- script loading start -->
     <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
 <!-- script loading end -->
-
 </html>

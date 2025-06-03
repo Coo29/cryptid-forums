@@ -15,38 +15,86 @@
 {% block content %}
     <h2>Posts tagged with <span class="tag">#{{ tag }}</span></h2>
 
+<!-- post view start -->
     {% if posts %}
         {% for post in posts %}
-            <a href="{{ url_for('view_post', post_id=post.id) }}" style="text-decoration: none; color: inherit;">
-                <div class="post">
-                    <div class="post-header">
-                        <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; margin-right: 10px;">
-                        <strong>{{ post.user.username }}</strong>
-                        <small>
-                             | 
-                            {{ post.timestamp.strftime('%y-%m-%d %H:%M') }}
-                             | 
-                            {{ post.likes.count() }}
-                            ✓
-                        </small>
-                    </div>
+            <div class="post-link" data-href="{{ url_for('view_post', post_id=post.id) }}">
+                <div class="post" data-href="{{ url_for('view_post', post_id=post.id) }}">
+                    <!-- post header start -->
+                        <div class="post-header">
+                            <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
+                            <strong>
+                                {{ post.user.username }}
+                            </strong>
+                            <small>
+                                | 
+                                {{ post.timestamp.strftime('%y-%m-%d %H:%M') }}
+                                | 
+                                {{ post.likes.count() }}
+                                ✓
+                            </small>
+                        </div>
+                    <!-- post header end -->
 
                     <br>
 
-                    <p class="full_post_content">
-                        {{ post.content[:140]|safe|format_post_content }}
-                        {% if post.content|length > 140 %}...{% endif %}
-                    </p>
+                    <!-- post content start -->
+                            <p class="full_post_content">
+                                {{ post.content[:140]|safe| format_post_content }}
+                                {% if post.content|length > 140 %}
+                                    ...
+                                {% endif %}
+                            </p>
+                    <!-- post content end -->
 
+                    <!-- post image preview start -->
                     {% if post.images %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ post.images[0].filename) }}" class="thumbnail" style="max-width: 200px;">
+                        <img src="{{ url_for('uploaded_file_image', filename=post.images[0].filename) }}" style="max-width: 200px;">
+
+                        {% if post.images|length > 1 %}
+                            <br>
+                            <small> {{ post.images|length - 1 }} other image{{'s' if post.images|length -1 > 1 else '' }}</small>
+                        {% endif %}
                     {% endif %}
+                    <!-- post image preview end -->  
+                    
+                    <!-- post attachments start -->
+                        {% if post.attachments %}
+                            <ul>
+                                <li>
+                                    <a class="file" href="{{ url_for('uploaded_file_file', filename=post.attachments[0].filename) }}" download>
+                                        {{ post.attachments[0].original_filename }}
+                                    </a>
+                                </li>
+                                {% if post.attachments|length > 1 %}
+                                    <small>{{ post.attachments|length - 1 }} other file{{ 's' if post.attachments|length -1 > 1 else '' }}</small>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    <!-- post attachments end -->
                 </div>
-            </a>
+            </div>
         {% endfor %}
-    {% else %}
-        <p>No posts found with this tag.</p>
-    {% endif %}
-        
-{% endblock %}
+    {% endblock %}
+<!-- post view end -->
 </body>
+
+<!-- script loading start -->
+
+    <!-- post clicking start -->
+        <script>
+            document.querySelectorAll('.post-link').forEach(wrapper => {
+                wrapper.style.cursor = 'pointer';
+                wrapper.addEventListener('click', () => {
+                    const href = wrapper.getAttribute('data-href');
+                    if (href) {
+                        window.location.href = href;
+                    }
+                });
+            });
+        </script>
+    <!-- post clicking end -->
+
+    <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+
+<!-- script loading end -->
