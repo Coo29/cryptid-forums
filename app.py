@@ -1,7 +1,9 @@
+# import start
 import os
 import uuid
 import re
-from flask import Flask, render_template, redirect, url_for, request, flash
+import sqlite3
+from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy 
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_dance.contrib.discord import make_discord_blueprint, discord
@@ -9,13 +11,26 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from markupsafe import escape, Markup
+from mimetypes import guess_type
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+# import end
 
-load_dotenv()
-
+# init junk start
+load_dotenv(override=True)
 app = Flask(__name__)
 app.config.from_object('config.Config')
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# init junk end
 
+# upload folder verif start
+upload_folder_images = os.path.join(app.root_path, 'static', 'uploads', 'images')
+os.makedirs(upload_folder_images, exist_ok=True)
+
+upload_folder_files = os.path.join(app.root_path, 'static', 'uploads', 'files')
+os.makedirs(upload_folder_files, exist_ok=True)
+# upload folder verif end
+
+# post formatting start
 @app.template_filter('format_post_content')
 def format_post_content(content):
     escaped = escape(content)
@@ -24,7 +39,9 @@ def format_post_content(content):
     return Markup(paragraphs)
 
 app.jinja_env.filters['format_post_content'] = format_post_content
+# post formatting end
 
+# user discord id start
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "discord.login"
@@ -34,9 +51,9 @@ discord_bp = make_discord_blueprint(
     client_secret=os.getenv("DISCORD_CLIENT_SECRET"),
     scope=["identify"],
 )
+
 app.register_blueprint(discord_bp, url_prefix="/login")
 
-# user discord id start
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     discord_id = db.Column(db.String(30), unique=True, nullable=False)
@@ -56,6 +73,9 @@ class User(UserMixin, db.Model):
 # user discord id end
 
 # user post setup start
+UPLOAD_FOLDER_IMAGES = os.path.join(app.root_path, 'uploads', 'images')
+UPLOAD_FOLDER_FILES = os.path.join(app.root_path, 'uploads', 'files')
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -65,26 +85,48 @@ class Post(db.Model):
     deleted = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     likes = db.relationship('Like', backref='post', lazy='dynamic')
+    images = db.relationship('PostImage', backref='post', cascade='all, delete-orphan')
+    attachments = db.relationship('PostAttachment', backref='post', cascade='all, delete-orphan')
+    attachment = db.Column(db.String(225))
 
 @app.route("/create", methods=["POST"])
 @login_required
 def create_post():
-    content = request.form.get("content")
-    images = request.files.getlist("images")
+    content = request.form.get("content", '')
+    files = request.files.getlist('attachment')
 
-    if not content:
-        flash("Post content is required!")
+    if not content and not files:
+        flash("Post cannot be empty!")
         return redirect(url_for("index"))
-    
+
     post = Post(content=content, user_id=current_user.id)
     db.session.add(post)
     db.session.flush()
 
-    for image in images:
-        if image and image.filename:
-            filename = secure_filename(f"{uuid.uuid4()}_{image.filename}")
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            db.session.add(PostImage(filename=filename, post_id=post.id))
+    for file in files:
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            mime_type, _ = guess_type(filename)
+
+            if mime_type and mime_type.startswith('image/'):
+                save_path = os.path.join(upload_folder_images, filename)
+                file.save(save_path)
+                image = PostImage(
+                    filename=filename,
+                    post_id=post.id
+                    )
+                db.session.add(image)
+                image_path = f"static/uploads/images/{filename}"
+            else:
+                save_path = os.path.join(upload_folder_files, filename)
+                file.save(save_path)
+                attachment = PostAttachment(
+                    filename=filename,
+                    original_filename=file.filename,
+                    post_id=post.id
+                )
+                db.session.add(attachment)
+                file_path = f"static/uploads/files/{filename}"
 
     db.session.commit()
     return redirect(url_for("index"))
@@ -92,17 +134,29 @@ def create_post():
 @app.route("/post/<int:post_id>")
 def view_post(post_id):
     post = Post.query.get_or_404(post_id)
-    
+
     posts = Post.query.filter_by(deleted=False).order_by(Post.timestamp.desc()).all()
 
     return render_template("post.html", post=post, user=current_user)
+
+@app.route("/uploads/files/<path:filename>")
+def uploaded_file_file(filename):
+    return send_from_directory('static/uploads/files', filename)
+
+@app.route("/uploads/images/<path:filename>")
+def uploaded_file_image(filename):
+    return send_from_directory('static/uploads/images', filename)
 
 class PostImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
-    post = db.relationship('Post', backref='images')
+class PostAttachment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String, nullable=False)
+    original_filename = db.Column(db.String, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
 def format_post_content(content):
     escaped = escape(content)
@@ -113,7 +167,11 @@ def format_post_content(content):
 
 # moderation stuff start
 def is_moderator():
-    return str(current_user.discord_id) in app.config["MODERATOR_IDS"]
+    is_mod = (
+        current_user.is_authenticated and
+        str(current_user.discord_id) in app.config.get("MODERATOR_IDS", [])
+    )
+    return is_mod
 
 @app.route("/delete_post/<int:post_id>", methods=["POST"])
 @login_required
@@ -156,11 +214,34 @@ def permanent_delete_post(post_id):
         abort(403)
     
     post = Post.query.get_or_404(post_id)
+    
+    for image in post.images:
+        image_path = os.path.join(upload_folder_images, image.filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        db.session.delete(image)
+
+    for attachment in post.attachments:
+        file_path = os.path.join(upload_folder_files, attachment.filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        db.session.delete(attachment)
+
+    for comment in post.comments:
+        db.session.delete(comment)
+
     db.session.delete(post)
     db.session.commit()
+
+    flash("Post and media permanently deleted.")
     return redirect(url_for("moderation_panel"))
+
+@app.context_processor
+def inject_globals():
+    return dict(is_moderator=is_moderator)
 # moderation stuff end
 
+# login start
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -171,7 +252,6 @@ def index():
 
     return render_template("index.html", user=current_user, posts=posts, config=app.config)
 
-# login start
 @app.route("/login")
 def login():
     if not discord.authorized:
@@ -269,7 +349,6 @@ def extract_tags(content):
 def show_tagged_posts(tag):
     posts = Post.query.filter(Post.content.ilike(f'%#{tag}%')).all()  
     return render_template('tagged_posts.html', tag=tag, posts=posts)
-
 # tag stuff end
 
 
@@ -277,3 +356,10 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(host="0.0.0.0", port=5001, debug=True)
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()

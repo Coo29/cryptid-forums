@@ -79,7 +79,7 @@
             'Face Card'
         ];
 
-const excludedClasses = ['no-highlight', 'code', 'math', 'icon'];
+const excludedClasses = ['tag', 'file', 'post-header'];
 
 const regex = new RegExp(`\\b(${highlightWords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?:s|'s)?\\b`, 'gi');
 

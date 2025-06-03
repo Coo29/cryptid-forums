@@ -91,6 +91,12 @@ img {
   text-decoration: underline;
 }
 
+.post-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .close-button {
     display: hidden;
     position: absolute;

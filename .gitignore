@@ -11,10 +11,14 @@ instance/site.db
 !instance/.gitkeep
 
 # ignore user generated files
-static/uploads/*
-!static/uploads/.gitkeep
+static/uploads/images/*
+!static/uploads/images/.gitkeep
+
+static/uploads/files/*
+!static/uploads/files/.gitkeep
 
 #other files
 .DS_Store
 Thumbs.db
 .notes
+.vscode/

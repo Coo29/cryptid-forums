@@ -1,33 +1,87 @@
-{% extends "index.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Moderation Panel
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<!-- back button start -->
+
+    <a href="{{ url_for('index') }}">
+        <button>
+            Back to main page
+        </button>
+    </a>
+
+<!-- back button end -->
+
+    <br>
+    <br>
+
+    <h1>Moderation Panel</h1>
 
 {% block content %}
-    <h1>Moderation Panel</h1>
+<!-- post view start -->
     {% for post in posts %}
-        <div class="post">
-        <div class="post-header">
-            <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
-            <strong>{{ post.user.username }}</strong>
+        <div class="post-link" data-href="{{ url_for('view_post', post_id=post.id) }}">
+            <div class="post" data-href="{{ url_for('view_post', post_id=post.id) }}">
+                <!-- post header start -->
+                    <div class="post-header">
+                        <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
+                        <strong>
+                            {{ post.user.username }}
+                        </strong>
+                        <small>
+                             | 
+                            {{ post.timestamp.strftime('%y-%m-%d %H:%M') }}
+                             | 
+                            {{ post.likes.count() }}
+                            ✓
+                        </small>
+                    </div>
+                <!-- post header end -->
+
+                <br>
+
+                <!-- post content start -->
+                        <p class="full_post_content">
+                            {{ post.content[:140]|safe| format_post_content }}
+                            {% if post.content|length > 140 %}
+                                ...
+                            {% endif %}
+                        </p>
+                <!-- post content end -->
+
+                <!-- post image preview start -->
+                {% if post.images %}
+                    <img src="{{ url_for('uploaded_file_image', filename=post.images[0].filename) }}" style="max-width: 200px;">
+
+                    {% if post.images|length > 1 %}
+                        <br>
+                        <small> {{ post.images|length - 1 }} other image{{'s' if post.images|length -1 > 1 else '' }}</small>
+                    {% endif %}
+                {% endif %}
+                <!-- post image preview end -->  
+                 
+                <!-- post attachments start -->
+                    {% if post.attachments %}
+                        <ul>
+                            <li>
+                                <a class="file" href="{{ url_for('uploaded_file_file', filename=post.attachments[0].filename) }}" download>
+                                    {{ post.attachments[0].original_filename }}
+                                </a>
+                            </li>
+                            {% if post.attachments|length > 1 %}
+                                <small>{{ post.attachments|length - 1 }} other file{{ 's' if post.attachments|length -1 > 1 else '' }}</small>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                <!-- post attachments end -->
+            </div>
         </div>
-        <small>{{post.timestamp.strftime('%y-%m-%d %H:%M:%S') }}</small>
-        <div class="full-post-content">{{ post.content|safe }}</div>
-        {% if post.image_filename %}
-            <img src="{{ url_for('static', filename='uploads/' ~ post.image_filename) }}" style="max-width: 100%;">
-        {% endif %}
-
-        <p>
-            <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
-                <button type="submit">
-                    {{ post.likes.count() }} ✓
-                </button>
-            </form>
-        </p>
-
-        {% if post.attachment %}
-        <p>
-            Attached file(s): <a href="{{ url_for('uploaded_file', filename=post.attachment) }}" download>{{ post.attachment }}</a>
-        </p>
-        {% endif %}
-    </div>
+<!-- post view end -->
         <form action="{{ url_for('restore_post', post_id=post.id) }}" method="post" style="display: inline;">
             <button type="submit">Restore Post</button>
         </form>

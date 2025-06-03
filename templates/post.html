@@ -48,10 +48,11 @@
             <div class="full_post_content">
                 {{ post.content| safe | format_post_content }}
             </div>
-            
-            {% for image in post.images %}
-                <img src="{{ url_for('static', filename='uploads/' ~ image.filename) }}" style="max-width: 200px;">
-            {% endfor %}
+            {% if post.images %}
+                {% for image in post.images %}
+                    <img src="{{ url_for('static', filename='uploads/images/' ~ image.filename) }}" style="max-width: 200px;">
+                {% endfor %}
+            {% endif %}
             
             <p>
                 <form action="{{ url_for('toggle_like', post_id=post.id) }}" method="POST" style="display:inline;">
@@ -61,12 +62,19 @@
                 </form>
             </p>
 
-            {% if post.attachment %}
-                <p>
-                    Attached file(s): <a href="{{ url_for('uploaded_file', filename=post.attachment) }}" download>
-                        {{ post.attachment }}
-                    </a>
-                </p>
+            {% if post.attachments %}
+                <div class="attachments">
+                    <p><strong>Attached file(s)</strong></p>
+                        <ul>
+                            {% for attachment in post.attachments %}
+                                <li>
+                                    <a class="file" href="{{ url_for('uploaded_file_file', filename=attachment.filename) }}" download>
+                                        {{ attachment.original_filename }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                </div>
             {% endif %}
         <!-- post content end -->
         

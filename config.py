@@ -7,3 +7,4 @@ class Config:
     DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
     DISCORD_CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET")
     MODERATOR_IDS = os.getenv("MODERATOR_IDS", "").split(",")
+    MODERATOR_IDS = [id.strip() for id in MODERATOR_IDS if id.strip()]
