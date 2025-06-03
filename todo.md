@@ -13,6 +13,7 @@
 - ability for mods to delete comments
 - upvotes on comments
 
+
 ## To Do (long term)
 
 - get server up and running globally
