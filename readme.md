@@ -30,7 +30,7 @@
 
 - once all of the prerequisites are installed, you will need to set up the .env file.
 
-SETTING UP THE .ENV FILE
+<h3>SETTING UP THE .ENV FILE</h3>
 
 - first you will need to set up a discord bot, you can do this from the discord developer portal:
 
@@ -40,7 +40,7 @@ SETTING UP THE .ENV FILE
 
   - <http://localhost:5001/login/discord/authorized>
 
-you will then need to fill in the .env file parameters with the following information:
+you will then need to fill in the .env file (rename .env.example to .env) parameters with the following information:
 
     FLASK_SECRET_KEY=
         - this should be a randomly generated key, it can be whatever you'd like.
@@ -66,7 +66,7 @@ you will then need to fill in the .env file parameters with the following inform
 
 - once it's all initialized, go to the following page to test the site:
 
-    <http://localhost:5001/>
+  - <http://localhost:5001/>
 
 <h3>OTHER NOTES</h3>
 
