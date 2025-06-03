@@ -7,14 +7,16 @@
 <!-- body start -->
     <!-- header start -->
         {% if user.is_authenticated %}
-            <h1>Welcome, {{ user.username }}</h1>
+            <h1 class="heading-text">Welcome, {{ user.username }}</h1>
         {% endif %}
     <!-- header end -->
 
     <!-- post view start -->
+     <div class="post-container">
             {% for post in posts %}
                 {% include "post_small.html" %}
             {% endfor %}
+    </div>
     <!-- post view end -->
 </body>
 <!-- body end -->

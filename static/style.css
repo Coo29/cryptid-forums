@@ -111,9 +111,22 @@ textarea {
   margin-top: 40px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 2em;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-right: 20px;
 }
 
 .footer-button {
@@ -193,6 +206,12 @@ body.readable-font, body.readable-font * {
   text-decoration: underline;
 }
 
+.heading-text {
+  padding-left: 10vw;
+  padding-right: 10vw;
+  max-width: 80vw;
+}
+
 .post {
     min-width: 10vw;
     max-width: 70vw;
@@ -230,6 +249,15 @@ body.readable-font, body.readable-font * {
   margin-bottom: 10px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.post-container {
+  width: 80vw;
+  margin: 0 auto;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  display: flex;
+  flex-direction: column;
 }
 
 img {

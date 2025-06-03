@@ -111,28 +111,28 @@ def create_post():
 
     for file in files:
         if file and file.filename:
-            filename = secure_filename(file.filename)
+            original_filename = file.filename
+            filename = secure_filename(original_filename)
+            unique_filename = f"{uuid.uuid4().hex}_{filename}"
             mime_type, _ = guess_type(filename)
 
             if mime_type and mime_type.startswith('image/'):
-                save_path = os.path.join(upload_folder_images, filename)
+                save_path = os.path.join(upload_folder_images, unique_filename)
                 file.save(save_path)
                 image = PostImage(
-                    filename=filename,
+                    filename=unique_filename,
                     post_id=post.id
                     )
                 db.session.add(image)
-                image_path = f"static/uploads/images/{filename}"
             else:
-                save_path = os.path.join(upload_folder_files, filename)
+                save_path = os.path.join(upload_folder_files, unique_filename)
                 file.save(save_path)
                 attachment = PostAttachment(
-                    filename=filename,
-                    original_filename=file.filename,
+                    filename=unique_filename,
+                    original_filename=original_filename,
                     post_id=post.id
                 )
                 db.session.add(attachment)
-                file_path = f"static/uploads/files/{filename}"
 
     db.session.commit()
     return redirect(url_for("index"))
@@ -361,7 +361,7 @@ def show_tagged_posts(tag):
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=80, debug=True)
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
