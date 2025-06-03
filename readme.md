@@ -9,23 +9,29 @@
 - you will also need to recreate the venv folder. you can do this by running (in the project folder):
 
     <i>[in terminal (linux)]</i>
-    > source venv/bin/activate
+    ##
+            > source venv/bin/activate
 
     <i>[in cmd.exe (windows)]</i>
-    > venv\Scripts\activate.bat
+    ##
+            > venv\Scripts\activate.bat
 
     <i>[in PowerShell (windows)]</i>
-    > venv\Scripts\activate.ps1
+    ##
+            > venv\Scripts\activate.ps1
 
 - once you are in the virtual environment, you will then need to run the following command:
 
-    > pip install flask flask_sqlalchemy flask_login flask_dance python-dotenv
+##
+        > pip install flask flask_sqlalchemy flask_login flask_dance python-dotenv
 
 - once all of the prerequisites are installed, you will need to set up the .env file.
 
 SETTING UP THE .ENV FILE
 
-- first you will need to set up a discord bot, you can do this from the discord developer portal (<https://discord.com/developers/applications/>)
+- first you will need to set up a discord bot, you can do this from the discord developer portal:
+
+  - <https://discord.com/developers/applications/>
 
 - in the oauth2 tab once the bot is created, you will need to add the following url to redirects:
 
@@ -52,7 +58,8 @@ you will then need to fill in the .env file parameters with the following inform
 
 - once all of the other steps are complete, run the following command in the project folder (and while still in the virtual environment):
 
-    > python app.py
+##
+        > python app.py
 
 - once it's all initialized, go to the following page to test the site:
 
