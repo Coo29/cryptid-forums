@@ -149,7 +149,7 @@ textarea {
 body.readable-font, body.readable-font * {
   font-family: 'segoe ui', 'helvetica neue', arial, sans-serif !important;
   letter-spacing: normal;
-  font-size: 0.8rem;
+  font-size: 0.8em;
 }
 
  .create-post {

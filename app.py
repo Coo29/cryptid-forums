@@ -148,7 +148,15 @@ def view_post(post_id):
 
 @app.route("/uploads/files/<path:filename>")
 def uploaded_file_file(filename):
-    return send_from_directory('static/uploads/files', filename)
+    attachment = PostAttachment.query.filter_by(filename=filename).first()
+    if not attachment:
+        abort(404)
+    return send_from_directory(
+        'static/uploads/files',
+        filename,
+        as_attachment=True,
+        download_name=attachment.original_filename
+        )
 
 @app.route("/uploads/images/<path:filename>")
 def uploaded_file_image(filename):
