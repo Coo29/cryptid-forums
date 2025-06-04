@@ -3,6 +3,7 @@ import os
 import uuid
 import re
 import sqlite3
+import requests
 from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy 
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
@@ -357,6 +358,26 @@ def show_tagged_posts(tag):
     return render_template('tagged_posts.html', tag=tag, posts=posts)
 # tag stuff end
 
+# Discord Bot Testing Start
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
+
+@app.route("/bug_report", methods=["POST"])
+@login_required
+def bug_report():
+    report = request.form.get("report")
+    if not report:
+        flash("Report cannot be empty.")
+        return redirect(url_for("index"))
+    payload = {
+        "content": f"Bug Report from {current_user.username} ({current_user.discord_id}):\n{report}",
+    }
+    try:
+        requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=5)
+        flash("Bug report sent successfully!")
+    except Exception as e:
+        flash(f"Failed to send bug report.")
+    return redirect(url_for("index"))
+# Discord Bot Testing End
 
 if __name__ == "__main__":
     with app.app_context():
