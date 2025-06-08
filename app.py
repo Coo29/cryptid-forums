@@ -263,9 +263,41 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    posts = Post.query.filter_by(deleted=False).order_by(Post.timestamp.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
+    sort = request.args.get("sort", "newest")
 
-    return render_template("index.html", user=current_user, posts=posts, config=app.config)
+    if sort == "newest":
+        order = Post.timestamp.desc()
+    elif sort == "oldest":
+        order = Post.timestamp.asc()
+    elif sort == "most_likes":
+        order = db.desc(db.func.count(Like.id))
+    elif sort == "most_comments":
+        order = db.desc(db.func.count(Comment.id))
+    else:
+        order = Post.timestamp.desc()
+
+    query = Post.query.filter_by(deleted=False)
+
+    if sort in ("most_likes", "most_comments"):
+        if sort == "most_likes":
+            query = query.outerjoin(Like).group_by(Post.id)
+        else:
+            query = query.outerjoin(Comment).group_by(Post.id)
+
+    posts = query.order_by(order).paginate(page=page, per_page=per_page, error_out=False)
+
+    return render_template(
+        "index.html",
+        user=current_user,
+        posts=posts.items,
+        pagination=posts,
+        config=app.config,
+        page=page,
+        per_page=per_page,
+        sort=sort
+    )
 
 @app.route("/login")
 def login():

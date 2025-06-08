@@ -11,13 +11,22 @@
         {% endif %}
     <!-- header end -->
 
+    <!-- pagination and sorting controls start -->
+        {% include "sort_scr.html" %}
+    <!-- pagination and sorting controls end -->
+
     <!-- post view start -->
-     <div class="post-container">
+    <div class="post-container">
             {% for post in posts %}
-                {% include "post_small.html" %}
+                {% include "post_small_scr.html" %}
             {% endfor %}
     </div>
     <!-- post view end -->
+
+    <!-- pagination links start -->
+        {% include "pages_scr.html" %}
+    <!-- pagination links end -->
+
 </body>
 <!-- body end -->
 {% endblock %}

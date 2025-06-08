@@ -10,8 +10,8 @@
 
 <!-- post view start -->
     {% for post in posts %}
-        {% include "post_large.html" %}
-        {% include "post_comments.html" %}
+        {% include "post_large_scr.html" %}
+        {% include "post_comments_scr.html" %}
 
         <!-- mod actions start -->
             <form action="{{ url_for('restore_post', post_id=post.id) }}" method="post" style="display: inline;">

@@ -5,7 +5,9 @@
                 <img src="{{ post.user.avatar_url }}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:10px;">
                 <strong>{{ post.user.username }}</strong>
                 <small> | {{ post.timestamp.strftime('%y-%m-%d %H:%M') }} 
-                        | {{ post.likes.count() }}✓</small>
+                        | {{ post.likes.count() }} ✓
+                        | {{ post.comments|length }} 🗨 
+                        |</small>
             </div>
         <!-- post header end -->
         

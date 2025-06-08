@@ -102,6 +102,47 @@ textarea {
   text-decoration: none;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  margin: 1em 0;
+}
+
+.pagination-controls {
+  margin-bottom: 1em;
+  margin-left: 10vw;
+}
+
+select, .pagination-controls select, select option {
+  background-color: #071322;
+  color: #dee0ce;
+  padding: 6px 12px;
+  border: 2px solid #2a2735;
+  border-radius: 15px;
+  cursor: pointer;
+  min-width: 60px;
+  font-size: 1em;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin-right: 0.5em;
+}
+
+select,
+.pagination-controls select,
+select option,
+.pagination-controls select option {
+  font-family: 'm6x11', 'segoe ui', 'helvetica neue', arial, sans-serif !important;
+}
+
+select:focus {
+  outline: none;
+  border-color: #163f70
+}
+
 .site-footer {
   width: 100%;
   background: #071322;
@@ -233,7 +274,6 @@ textarea {
 body.readable-font, body.readable-font * {
   font-family: 'segoe ui', 'helvetica neue', arial, sans-serif !important;
   letter-spacing: normal;
-  font-size: 0.8em;
 }
 
  .create-post {

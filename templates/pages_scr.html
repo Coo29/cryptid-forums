@@ -1,0 +1,9 @@
+<div class="pagination">
+    {% if pagination.has_prev %}
+        <a href="{{ url_for('index', page=pagination.prev_num, per_page=per_page, sort=sort) }}">&laquo; Prev</a>
+    {% endif %}
+    <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+    {% if pagination.has_next %}
+        <a href="{{ url_for('index', page=pagination.next_num, per_page=per_page, sort=sort) }}">Next &raquo;</a>
+    {% endif %}
+</div>

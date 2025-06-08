@@ -1,0 +1,19 @@
+     <form method="get" class="pagination-controls" style="display:flex; gap:1em; align-items:center;">
+        <label>
+        Posts per page:
+        <select name="per_page" onchange="this.form.submit()">
+            {% for n in [5, 10, 20, 50] %}
+                <option value="{{ n }}" {% if per_page == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>
+        Sort by:
+        <select name="sort" onchange="this.form.submit()">
+            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+            <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+            <option value="most_likes" {% if sort == 'most_likes' %}selected{% endif %}>Most Likes</option>
+            <option value="most_comments" {% if sort == 'most_comments' %}selected{% endif %}>Most Comments</option>
+        </select>
+    </label>
+</form>
