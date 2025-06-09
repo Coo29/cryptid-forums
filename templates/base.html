@@ -38,7 +38,7 @@
 <!-- post creation modal start -->
     <div id="postModal" class="modal" style="display:none;">
         <div class="modal-content">
-            <form action="{{ url_for('create_post') }}" method="POST" enctype="multipart/form-data">
+            <form id="post-create-form" action="{{ url_for('create_post') }}" method="POST" enctype="multipart/form-data">
                 <!-- toolbar start -->
                     <div id="toolbar">
                         <!-- font size start -->

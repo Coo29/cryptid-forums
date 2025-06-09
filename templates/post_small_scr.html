@@ -19,7 +19,7 @@
         <div class="post-content-row">
             <div class="post-content-text">
                 <p class="full_post_content">
-                    {{ post.content[:140]|safe| format_post_content }}
+                    {{ post.content[:140] | format_post_content }}
                     {% if post.content|length > 140 %}
                         ...
                     {% endif %}

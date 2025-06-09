@@ -4,6 +4,7 @@ import uuid
 import re
 import sqlite3
 import requests
+import bleach
 from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy 
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
@@ -32,12 +33,24 @@ os.makedirs(upload_folder_files, exist_ok=True)
 # upload folder verif end
 
 # post formatting start
+ALLOWED_TAGS = ['b', 'i', 'u', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'span', 'blockquote', 'pre', 'code']
+ALLOWED_ATTRIBUTES = {
+    'a': ['href', 'title', 'rel', 'target'],
+    'span': ['style'],
+    'p': ['style'],
+    'li': ['style'],
+                    }
+
 @app.template_filter('format_post_content')
 def format_post_content(content):
-    escaped = escape(content)
-    tagged = re.sub(r"#(\w+)", r'<a href="/tags/\1" class="tag">#\1</a>', escaped)
-    paragraphs = ''.join(f'<p>{line}</p>' for line in tagged.split('\n') if line.strip())
-    return Markup(paragraphs)
+    safe_content = bleach.clean(
+        content,
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRIBUTES,
+        strip=True
+    )
+    tagged = re.sub(r"#(\w+)", r'<a href="/tags/\1" class="tag">#\1</a>', content)
+    return Markup(content)
 
 app.jinja_env.filters['format_post_content'] = format_post_content
 # post formatting end
@@ -96,6 +109,12 @@ class Post(db.Model):
 def create_post():
     title = request.form.get("title", '').strip()
     content = request.form.get("content", '')
+    safe_content = bleach.clean(
+        content,
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRIBUTES,
+        strip=True
+    )
     files = request.files.getlist('attachment')
 
     if not title:
@@ -106,7 +125,7 @@ def create_post():
         flash("Post cannot be empty!")
         return redirect(url_for("index"))
 
-    post = Post(title=title, content=content, user_id=current_user.id)
+    post = Post(title=title, content=safe_content, user_id=current_user.id)
     db.session.add(post)
     db.session.flush()
 

@@ -76,11 +76,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const form = document.querySelector("form");
-    form.addEventListener("submit", function () {
-        const hiddenInput = document.querySelector("#hidden-content");
-        hiddenInput.value = quill.root.innerHTML;
-    });
+    const form = document.getElementById("post-create-form");
+    if (form) {
+        form.addEventListener("submit", function () {
+            const hiddenInput = document.querySelector("#hidden-content");
+            hiddenInput.value = quill.root.innerHTML;
+        });
+    }
 });
 // quill tool loading end
 
@@ -149,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    const form = document.querySelector("form");
+    const form = document.getElementById("post-create-form");
     form.addEventListener("submit", function (e) {
         const dt = new DataTransfer();
         filesArray.forEach(f => dt.items.add(f));
