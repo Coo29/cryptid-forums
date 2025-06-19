@@ -5,11 +5,14 @@
   font-style: normal;
 }
 
+:root {
+  --font-family: 'm6x11';
+}
+
 * {
   margin: 0;
   border: 0;
   padding: 0;
-  --font-family: 'm6x11';
   font-family: var(--font-family);
 }
 
