@@ -1,3 +1,5 @@
+let isDefaultFont = false;
+
 // post click start
 document.querySelectorAll('.post-link').forEach(wrapper => {
     wrapper.style.cursor = 'pointer';
@@ -163,20 +165,15 @@ document.addEventListener("DOMContentLoaded", function () {
 // font swap start
 document.addEventListener("DOMContentLoaded", function () {
     const fontToggleBtn = document.getElementById('fontToggleBtn');
-    if (localStorage.getItem('readableFont') === 'true') {
-        document.body.classList.add('readable-font'); // <-- This line is needed!
-        if (fontToggleBtn) fontToggleBtn.textContent = 'Switch to Default Font';
-    } else {
-        if (fontToggleBtn) fontToggleBtn.textContent = 'Switch Font';
-    }
-
-    if (fontToggleBtn) {
-        fontToggleBtn.addEventListener('click', function () {
-            document.body.classList.toggle('readable-font');
-            const isReadable = document.body.classList.contains('readable-font');
-            localStorage.setItem('readableFont', isReadable ? 'true' : 'false');
-            fontToggleBtn.textContent = isReadable ? 'Switch to Default Font' : 'Switch Font';
-        });
-    }
+    fontToggleBtn.addEventListener('click', function () {
+        if (isDefaultFont === false) {
+            document.documentElement.style.setProperty('--font-family', 'Arial');
+            isDefaultFont = true;
+        } else {
+            document.documentElement.style.setProperty('--font-family', 'm6x11');
+            isDefaultFont = false;
+        }
+        fontToggleBtn.textContent = isDefaultFont ? 'Switch to Default Font' : 'Switch to Arial Font';
+    });
 });
 // font swap end
