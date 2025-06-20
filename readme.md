@@ -26,7 +26,7 @@
 - once you are in the virtual environment, you will then need to run the following command:
 
 ######
-        pip install flask flask_sqlalchemy flask_login flask_dance python-dotenv
+        pip install flask flask_sqlalchemy flask_login flask_dance flask_migrate python-dotenv
 
 - once all of the prerequisites are installed, you will need to set up the .env file.
 
