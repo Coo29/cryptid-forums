@@ -8,6 +8,30 @@
     <h1>Moderation Panel</h1>
 <!-- header end -->
 
+<!-- user post perms start -->
+    <h2> User Posting Permissions Control </h2>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Can Post?</th>
+            <th>Action</th>
+        </tr>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ 'Yes' if u.can_post else 'No' }}</td>
+            <td>
+                <form action="{{ url_for('toggle_post_permission', user_id=u.id) }}" method="post" style="display:inline;">
+                    <button type="submit">
+                        {% if u.can_post %}Disable Posting{% else %}Allow Posting{% endif %}
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+<!-- user post perms end -->
+
 <!-- post view start -->
     {% for post in posts %}
         {% include "post_large_scr.html" %}
