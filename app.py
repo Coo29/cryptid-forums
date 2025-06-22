@@ -9,6 +9,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash, sen
 from flask_sqlalchemy import SQLAlchemy 
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_dance.contrib.discord import make_discord_blueprint, discord
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -57,6 +58,7 @@ app.jinja_env.filters['format_post_content'] = format_post_content
 
 # user discord id start
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = "discord.login"
 
@@ -74,6 +76,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), nullable=False)
     avatar_hash = db.Column(db.String(128), nullable=True)
     discriminator = db.Column(db.String(4), nullable=True)
+    can_post = db.Column(db.Boolean, default=False)
 
     @property
     def avatar_url(self):
@@ -107,6 +110,9 @@ class Post(db.Model):
 @app.route("/create", methods=["POST"])
 @login_required
 def create_post():
+    if not current_user.can_post:
+        flash("You are unable to create a post right now.")
+        return redirect(url_for("index"))
     title = request.form.get("title", '').strip()
     content = request.form.get("content", '')
     safe_content = bleach.clean(
@@ -227,7 +233,8 @@ def moderation_panel():
         abort(403)
     
     deleted_posts = Post.query.filter_by(deleted=True).all()
-    return render_template("moderation.html", posts=deleted_posts, user=current_user)
+    users = User.query.all()
+    return render_template("moderation.html", posts=deleted_posts, users=users, user=current_user)
 
 @app.route("/restore_post/<int:post_id>", methods=["POST"])
 @login_required
@@ -268,6 +275,17 @@ def permanent_delete_post(post_id):
     db.session.commit()
 
     flash("Post and media permanently deleted.")
+    return redirect(url_for("moderation_panel"))
+
+@app.route("/toggle_post_permission/<int:user_id>", methods=["POST"])
+@login_required
+def toggle_post_permission(user_id):
+    if not is_moderator():
+        abort(403)
+    user = User.query.get_or_404(user_id)
+    user.can_post = not user.can_post
+    db.session.commit()
+    flash(f"{'Disabled' if not user.can_post else 'Allowed'} {user.username} posting.")
     return redirect(url_for("moderation_panel"))
 
 @app.context_processor
@@ -375,6 +393,9 @@ class Comment(db.Model):
 @app.route("/post/<int:post_id>/comment", methods=["POST"])
 @login_required
 def add_comment(post_id):
+    if not current_user.can_post:
+        flash("You are unable to comment right now.")
+        return redirect(url_for("view_post", post_id=post_id))
     content = request.form.get("comment")
     if not content:
         flash("Comment cannot be empty.")

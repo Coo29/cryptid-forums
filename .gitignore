@@ -9,6 +9,7 @@ venv/
 .env
 instance/site.db
 !instance/.gitkeep
+migrations
 
 # ignore user generated files
 static/uploads/images/*

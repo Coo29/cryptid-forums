@@ -70,4 +70,11 @@ you will then need to fill in the .env file (rename .env.example to .env) parame
 
 <h3>OTHER NOTES</h3>
 
+- To migrate databases (if a major change in the python code is done) run in the project folder:
+
+######
+        flask db migrate -m "whatever message you want"
+
+        flask db upgrade
+
 that should be it! if you have any issues contact me on discord. my username is coo29.
