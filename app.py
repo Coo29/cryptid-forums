@@ -291,6 +291,18 @@ def toggle_post_permission(user_id):
 @app.context_processor
 def inject_globals():
     return dict(is_moderator=is_moderator)
+
+@app.route("/comment/<int:comment_id>/delete", methods=["POST"])
+@login_required
+def delete_comment(comment_id):
+    if not is_moderator():
+        abort(403)
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+    db.session.delete(comment)
+    db.session.commit()
+    flash("Comment Deleted")
+    return redirect(url_for("view_post", post_id=post_id))
 # moderation stuff end
 
 # login start
@@ -387,6 +399,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    likes = db.relationship('CommentLike', backref='comment', lazy='dynamic')
     user = db.relationship('User')
     post = db.relationship('Post', backref='comments')
 
@@ -426,6 +439,27 @@ def  toggle_like(post_id):
         db.session.add(like)
     db.session.commit()
     return redirect(url_for("view_post", post_id=post_id))
+
+class CommentLike(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    __table_args__ = (db.UniqueConstraint('comment_id', 'user_id', name='unique_comment_like'),)
+
+    @app.route("/comment/<int:comment_id>/like", methods=["POST"])
+    @login_required
+    def toggle_comment_like(comment_id):
+        comment = Comment.query.get_or_404(comment_id)
+        existing_like = CommentLike.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+        if existing_like:
+            db.session.delete(existing_like)
+        else:
+            like = CommentLike(comment_id=comment_id, user_id=current_user.id)
+            db.session.add(like)
+        db.session.commit()
+        return redirect(url_for("view_post", post_id=comment.post_id))
+
 # voting end
 
 # tag stuff start

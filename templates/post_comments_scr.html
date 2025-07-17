@@ -10,5 +10,17 @@
             <p>
                 {{ comment.content }}
             </p>
+            <form action="{{ url_for('toggle_comment_like', comment_id=comment.id) }}" method="POST" style="display:inline;">
+                <button type="submit">
+                    {{ comment.likes.count() }} ✓
+                </button>
+            </form>
+            {% if is_moderator() %}
+                <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" style="font-size:1.5rem;">
+                        Delete
+                    </button>
+                </form>
+            {% endif %}
         </div>
     {% endfor %}

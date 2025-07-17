@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}<title>Edit Post</title>{% endblock %}
+{% block content %}
+<div id="editPostModal" class="modal" style="display: block;">
+    <div class="modal-content">
+        <form id="post-edit-form" action="{{ url_for('edit_post', post_id=post.id) }}" method="POST">
+            <div id="toolbar">
+                <!-- font size start -->
+                    <div class="custom-font-size-dropdown">
+                        <button type="button" class="dropdown-toggle">Normal</button>
+                        <ul class="dropdown-menu">
+                            <li data-size="small">Small</li>
+                            <li data-size="normal">Normal</li>
+                            <li data-size="large">Large</li>
+                            <li data-size="huge">Huge</li>
+                        </ul>
+                    </div>
+                <!-- font size end -->
+
+                <!-- text formatting start -->
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-code-block"></button>
+                <!-- text formatting end -->
+
+                <!-- links start -->
+                    <button class="ql-link"></button>
+                <!-- links end -->
+
+                <!-- lists start -->
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                <!-- lists end -->
+
+                <!-- clean formatting start -->
+                    <button class="ql-clean"></button>
+                <!-- clean formatting end -->
+
+                <!-- spacer start -->
+                <div class="toolbar-spacer"></div>
+                <!-- spacer end -->
+                <!-- post title start -->
+                <input type="text" id="post-title" name="title" maxlength="140" class="post-title-input" required style="width:40%; margin-bottom:10px;" placeholder="Enter a title...">
+                <!-- post title end -->
+            </div>
+            <!-- toolbar end -->
+            <input type="text" id="post-title" name="title" maxlength="140" class="post-title-input" required value="{{ post.title }}">
+            <div id="editor-container" style="height: 35vw;"></div>
+            <input type="hidden" name="content" id="hidden-content">
+            <div class="post-button-row">
+                <a href="{{ url_for('view_post', post_id=post.id) }}" class="browse-button" style="font-size:1.2rem;">Cancel</a>
+                <button class="browse-button" type="submit" style="font-size:1.2rem;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
