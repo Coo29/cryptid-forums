@@ -1,3 +1,7 @@
+<h1>Test the site here!</h1>
+
+- <http://146.168.166.228/>
+
 <h1>HOW TO RUN</h1>
 
 <h3>PREREQUISITES:</h3>
@@ -66,7 +70,7 @@ you will then need to fill in the .env file (rename .env.example to .env) parame
 
 - once it's all initialized, go to the following page to test the site:
 
-  - <http://localhost:5001/>
+  - <http://localhost/>
 
 <h3>OTHER NOTES</h3>
 
@@ -75,6 +79,7 @@ you will then need to fill in the .env file (rename .env.example to .env) parame
 ######
         flask db init
 
+
 - To migrate databases (if a major change in the python code is done) run in the project folder:
 
 ######
@@ -82,4 +87,11 @@ you will then need to fill in the .env file (rename .env.example to .env) parame
 
         flask db upgrade
 
+- To migrate databases (if a major change in the python code is done) run in the project folder:
+
+######
+        flask db migrate -m "whatever message you want"
+
+        flask db upgrade
+        
 that should be it! if you have any issues contact me on discord. my username is coo29.
