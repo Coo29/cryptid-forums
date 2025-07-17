@@ -1,6 +1,6 @@
 <h1>Test the site here!</h1>
 
-- <http://cryptid.ddns.net/>
+- <http://146.168.166.228/>
 
 <h1>HOW TO RUN</h1>
 
