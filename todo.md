@@ -6,9 +6,6 @@
 - buttons for letting users edit their own posts
 - spam protection
 - account verification before any important actions
-- ability for mods to remove comments
-- ability for mods to delete comments
-- upvotes on comments
 
 ## To Do (long term)
 
@@ -24,3 +21,6 @@
 - comment counter
 - pages for posts
 - page sorting buttons
+- ability for mods to remove comments
+- ability for mods to delete comments
+- upvotes on comments
